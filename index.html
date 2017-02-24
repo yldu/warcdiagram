@@ -42,22 +42,22 @@ d3.json("sites_hierarchy.json", function(error, root) {
     
   var node = rect
       .data(partition(d3.entries(root)[0]))
-    .enter()
+      .enter()
     
-   rect = node.append("rect")
+   rect = node.append("svg:rect")
       .attr("x", function(d) { return x(d.x); })
       .attr("y", function(d) { return y(d.y); })
       .attr("width", function(d) { return x(d.dx); })
       .attr("height", function(d) { return y(d.dy); })
       .attr("fill", function(d) { return color((d.children ? d : d.parent).key); })
       .on("click", clicked)
+   .on("mouseover", mouseover)
+   .on("mouseout", mouseout);
     
     text = node.append("text")
       .attr("x", function(d) { return x(d.x); })
       .attr("y", function(d) {return y(d.y) + y(d.dy) / 2;})
-      .text(function(d) {
-        return d.key + ": " + d.value; 
-    });
+      .text(function(d) { return d.key + ": " + d.value; });
 });
 
 function clicked(d) {
@@ -75,6 +75,20 @@ function clicked(d) {
       .duration(750)
       .attr("x", function(d) { return x(d.x); })
       .attr("y", function(d) { return y(d.y) + (y(d.y + d.dy) - y(d.y)) / 2; })
+}
+    
+function mouseover(d) {
+   svg.append("text")
+      .attr("x",  x(d.x))
+      .attr("y",  y(d.y) - 10)
+      .attr("class", "hover")
+      .style("fill", "#FF9999")
+      .style("backgroundColor", "black")
+      .text(d.key)
+}
+    
+function mouseout(d) {
+    svg.select("text.hover").remove();
 }
 
 
