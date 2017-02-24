@@ -28,7 +28,7 @@ with open("/Users/shirleydu/Documents/Waterloo/4B/warcbase2017w/summary/dist.txt
             found = _finditem(data, p)
 
             if found is not None and url.startswith(p) or p == "root":
-                if url[len(p)] == "/" or p == "root":
+                if p == "root" or url[len(p)] == "/" :
                     if should_reset:
                         prefixes = prefixes[i:]  # reset head
                     if is_leaf == 1:
