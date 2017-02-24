@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+rect {
+  stroke: #fff;
+}
+
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script> 
+<script type="text/javascript" src="tipsy.js"></script>
+<link href="tipsy.css" rel="stylesheet" type="text/css" />
+<script>
+
+var width = screen.width,
+    height = screen.height;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([0, height]);
+
+var color = d3.scale.category20c();
+
+var partition = d3.layout.partition()
+    .children(function(d) { return isNaN(d.value) ? d3.entries(d.value) : null; })
+    .value(function(d) { return d.value; });
+    
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var rect = svg.selectAll("rect");
+var text = rect;
+
+d3.json("sites_hierarchy.json", function(error, root) {
+  if (error) throw error;
+    
+  var node = rect
+      .data(partition(d3.entries(root)[0]))
+    .enter()
+    
+   rect = node.append("rect")
+      .attr("x", function(d) { return x(d.x); })
+      .attr("y", function(d) { return y(d.y); })
+      .attr("width", function(d) { return x(d.dx); })
+      .attr("height", function(d) { return y(d.dy); })
+      .attr("fill", function(d) { return color((d.children ? d : d.parent).key); })
+      .on("click", clicked)
+    
+    text = node.append("text")
+      .attr("x", function(d) { return x(d.x); })
+      .attr("y", function(d) {return y(d.y) + y(d.dy) / 2;})
+      .text(function(d) {
+        return d.key + ": " + d.value; 
+    });
+});
+
+function clicked(d) {
+  x.domain([d.x, d.x + d.dx]);
+  y.domain([d.y, 1]).range([d.y ? 20 : 0, height]);
+
+  rect.transition()
+      .duration(750)
+      .attr("x", function(d) { return x(d.x); })
+      .attr("y", function(d) { return y(d.y); })
+      .attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
+      .attr("height", function(d) { return y(d.y + d.dy) - y(d.y); });
+
+  text.transition()
+      .duration(750)
+      .attr("x", function(d) { return x(d.x); })
+      .attr("y", function(d) { return y(d.y) + (y(d.y + d.dy) - y(d.y)) / 2; })
+}
+
+
+</script>
+</body>
