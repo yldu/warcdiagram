@@ -9,9 +9,6 @@ rect {
 </style>
 <body>
 <script src="//d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script> 
-<script type="text/javascript" src="tipsy.js"></script>
-<link href="tipsy.css" rel="stylesheet" type="text/css" />
 <script>
 
 var width = screen.width,
@@ -51,8 +48,8 @@ d3.json("sites_hierarchy.json", function(error, root) {
       .attr("height", function(d) { return y(d.dy); })
       .attr("fill", function(d) { return color((d.children ? d : d.parent).key); })
       .on("click", clicked)
-   .on("mouseover", mouseover)
-   .on("mouseout", mouseout);
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout);
     
     text = node.append("text")
       .attr("x", function(d) { return x(d.x); })
@@ -79,8 +76,8 @@ function clicked(d) {
     
 function mouseover(d) {
    svg.append("text")
-      .attr("x",  x(d.x))
-      .attr("y",  y(d.y) - 10)
+      .attr("x", x(d.x))
+      .attr("y", y(d.y) - 10)
       .attr("class", "hover")
       .style("fill", "#FF9999")
       .style("backgroundColor", "black")
